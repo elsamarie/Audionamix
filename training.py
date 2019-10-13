@@ -1,14 +1,18 @@
+# -*- coding: utf-8 -*-
 import torch 
 import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
+import numpy as np
 
-from architecture import CNN_A
+from architecture import CNN_A, Net
 from data import *
+from plot import *
 
 learning_rate=0.001
 momentum=0.9
-n_epoch=10
+n_epoch=500
+PATH_model="./model/model.pt"
 
 
 #Initialisation 
@@ -18,63 +22,14 @@ crossentropy=nn.CrossEntropyLoss()
 
 
 
+#Performances tracker
+train_loss=np.array([])
+train_accuracy=np.array([])
 
-"""
-
-class Net(nn.Module):
-    def __init__(self):
-        super(Net, self).__init__()
-        self.conv1 = nn.Conv2d(3, 6, 5)
-        self.pool = nn.MaxPool2d(2, 2)
-        self.conv2 = nn.Conv2d(6, 16, 5)
-        self.fc1 = nn.Linear(16 * 5 * 5, 120)
-        self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 10)
-
-    def forward(self, x):
-        x = self.pool(F.relu(self.conv1(x)))
-        x = self.pool(F.relu(self.conv2(x)))
-        x = x.view(-1, 16 * 5 * 5)
-        x = F.relu(self.fc1(x))
-        x = F.relu(self.fc2(x))
-        x = self.fc3(x)
-        return x
+val_loss=np.array([])
+val_accuracy=np.array([])
 
 
-net = Net()
-
-criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
-
-
-for epoch in range(2):  # loop over the dataset multiple times
-
-    running_loss = 0.0
-    for i, data in enumerate(trainloader, 0):
-        # get the inputs; data is a list of [inputs, labels]
-        inputs, labels = data
-
-        # zero the parameter gradients
-        optimizer.zero_grad()
-
-        # forward + backward + optimize
-        outputs = net(inputs)
-        loss = criterion(outputs, labels)
-        loss.backward()
-        optimizer.step()
-
-        _, predicted = torch.max(outputs, 1)
-        print(predicted)
-
-        # print statistics
-        running_loss += loss.item()
-        if i % 2000 == 1999:    # print every 2000 mini-batches
-            print('[%d, %5d] loss: %.3f' %
-                  (epoch + 1, i + 1, running_loss / 2000))
-            running_loss = 0.0
-
-print('Finished Training')
-"""
 
 
 print('Beginning of Training')
@@ -82,35 +37,87 @@ print('Beginning of Training')
 for n in range(0, n_epoch):
 
 
-    Loss=0
-    Accuracy=0
+    epoch_loss=0
+    epoch_accuracy=0
+
+    bar=ProgressBar(trainloader.__len__(),'Epoch[{}/{}]:'.format(n+1, n_epoch), ' ',50)
+    bar.initProgressBar()
+
     for i, (inputs, labels) in enumerate(trainloader, 0):
 
 
         optimizer.zero_grad()
         outputs=model(inputs)
 
+        #Crossentropy loss
         batch_loss=crossentropy(outputs, labels)
-
-        print("batch loss", batch_loss.item())
-
 
         #BackPropagation of the loss to update the weights of the model
         batch_loss.backward()
         optimizer.step()
 
+        #Accuracy
         _, predicted = torch.max(outputs, 1)
         correct= (predicted==labels).sum().item()
 
-        batch_accuracy=correct/batch_size
+        batch_accuracy=float(correct)/float(batch_size)
+
+        epoch_accuracy+=batch_accuracy
+        epoch_loss+=batch_loss.item()
+
+        bar.loopProgressBar(i)
 
 
-        
-        Accuracy+=batch_accuracy
-        Loss+=batch_loss.item()
+    epoch_accuracy=epoch_accuracy/trainloader.__len__()
+    epoch_loss=epoch_loss/trainloader.__len__()
 
-    print('Accuracy :', Accuracy/trainloader.__len__()*100)
-    print('Loss :', Loss/trainloader.__len__())
+    print("Training set   : Loss : %s || Accuracy : %s "%(round(epoch_loss,3), round(epoch_accuracy*100,3)))
 
+
+    train_loss=np.append(train_loss, epoch_loss)
+    train_accuracy=np.append(train_accuracy, epoch_accuracy)
+
+
+
+
+
+    epoch_loss=0
+    epoch_accuracy=0
+
+    for i, (inputs, labels) in enumerate(valloader, 0):
+
+        outputs=model(inputs)
+
+        #Crossentropy Loss
+        batch_loss=crossentropy(outputs, labels)
+
+        #Accuracy
+        _, predicted = torch.max(outputs, 1)
+        correct= (predicted==labels).sum().item()
+
+        batch_accuracy=float(correct)/float(batch_size_val)
+
+        epoch_accuracy+=batch_accuracy
+        epoch_loss+=batch_loss.item()
+
+
+
+
+    epoch_accuracy=epoch_accuracy/valloader.__len__()
+    epoch_loss=epoch_loss/valloader.__len__()
+
+    print("Validation set : Loss : %s || Accuracy : %s "%(round(epoch_loss,3), round(epoch_accuracy*100,3)))
+
+    val_loss=np.append(val_loss, epoch_loss)
+    val_accuracy=np.append(val_accuracy, epoch_accuracy)
+
+
+#Plot the performance trackers
+plot_crossentropy_loss(train_loss, val_loss,n_epoch)
+plot_accuracy(train_accuracy, val_accuracy,n_epoch)
+
+
+#Save the model
+torch.save(model.state_dict(), PATH_model)
 
 print('End of Training')

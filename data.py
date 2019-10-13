@@ -6,7 +6,9 @@ import torch.utils.data as data
 
 fraction_val=0.3
 fraction_train=1-fraction_val
-batch_size=30
+batch_size=10
+batch_size_val=400
+batch_size_test=400
 
 
 #Download the train (50000) and the test (10000) dataset from CIFAR10
@@ -21,15 +23,14 @@ testset = torchvision.datasets.CIFAR10(root='./data', train=False, download=True
 #Creation of the train, validation and the test dataset for Pytorch
 
 
-trainsampler=data.RandomSampler(trainset, replacement=True, num_samples=int(fraction_train*(trainset.__len__())))
-valsampler=data.RandomSampler(trainset, replacement=True, num_samples=int(fraction_val*(trainset.__len__())))
+trainsampler=data.RandomSampler(trainset, replacement=True, num_samples=int(fraction_train*5000))
+valsampler=data.RandomSampler(trainset, replacement=True, num_samples=int(fraction_val*5000))
 
 trainloader = data.DataLoader(trainset, batch_size=batch_size, sampler=trainsampler , num_workers=2)
-print(trainloader.__len__())
-valloader= data.DataLoader(trainset, batch_size=4, sampler=valsampler, num_workers=1)
+valloader= data.DataLoader(trainset, batch_size=batch_size_val, sampler=valsampler, num_workers=2)
 
-
-testloader = data.DataLoader(testset, batch_size=batch_size, shuffle=False, num_workers=1)
+testloaderinference = data.DataLoader(testset, batch_size=1, shuffle=False, num_workers=1)
+testloader=data.DataLoader(testset, batch_size=batch_size_test, shuffle=False, num_workers=1)
 
 classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 

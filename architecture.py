@@ -24,6 +24,25 @@ def compute_out_size(in_size, F, P, S):
     return out_size
 
 
+class Net(nn.Module):
+    def __init__(self):
+        super(Net, self).__init__()
+        self.conv1 = nn.Conv2d(3, 6, 5)
+        self.pool = nn.MaxPool2d(2, 2)
+        self.conv2 = nn.Conv2d(6, 16, 5)
+        self.fc1 = nn.Linear(16 * 5 * 5, 120)
+        self.fc2 = nn.Linear(120, 84)
+        self.fc3 = nn.Linear(84, 10)
+
+    def forward(self, x):
+        x = self.pool(F.relu(self.conv1(x)))
+        x = self.pool(F.relu(self.conv2(x)))
+        x = x.view(-1, 16 * 5 * 5)
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        x = self.fc3(x)
+        return x
+
 class CNN_A(nn.Module):
 
 
@@ -31,49 +50,42 @@ class CNN_A(nn.Module):
 
         super(CNN_A,self).__init__()
 
-        self.conv1=nn.Sequential(nn.Conv1d(in_channels=3,out_channels=64,kernel_size=(3,3), stride=(1,1),padding=1),
+        self.conv1=nn.Sequential(nn.Conv1d(in_channels=3,out_channels=8,kernel_size=(3,3), stride=(1,1),padding=1),
                 nn.ReLU()
                 )
         self.size=compute_out_size(32, 3, 1, 1)
-        print(self.size)
+
 
 
         self.maxpool1=nn.MaxPool2d(kernel_size=(2,2), stride=(2,2))
         self.size=compute_out_size(self.size, 2, 0, 2)
-        print(self.size)
 
-        self.conv2=nn.Sequential(nn.Conv1d(in_channels=64,out_channels=128,kernel_size=(3,3), stride=(1,1),padding=1),
+
+        self.conv2=nn.Sequential(nn.Conv1d(in_channels=8,out_channels=16,kernel_size=(3,3), stride=(1,1),padding=1),
                 nn.ReLU()
                 )
         self.size=compute_out_size(self.size, 3, 1, 1)
-        print(self.size)
+
         
         self.maxpool2=nn.MaxPool2d(kernel_size=(2,2), stride=(2,2))
         self.size=compute_out_size(self.size, 2, 0, 2)
-        print(self.size)
 
-        self.conv3=nn.Sequential(nn.Conv1d(in_channels=128,out_channels=256,kernel_size=(3,3), stride=(1,1),padding=1),
+        self.conv3=nn.Sequential(nn.Conv1d(in_channels=16,out_channels=32,kernel_size=(3,3), stride=(1,1),padding=1),
                 nn.ReLU()
                 )
         self.size=compute_out_size(self.size, 3, 1, 1)
-        print(self.size)
+
         
         self.maxpool3=nn.MaxPool2d(kernel_size=(2,2), stride=(2,2))
         self.size=compute_out_size(self.size, 2, 0, 2)
-        print(self.size)
-
-    
 
 
-        self.FC1=nn.Sequential(nn.Linear(self.size*self.size*256, 4096),
+        self.FC1=nn.Sequential(nn.Linear(4*4*32, 256),
                     nn.ReLU()
                 )
 
-        self.FC2=nn.Sequential(nn.Linear(4096, 1000),
-                    nn.ReLU()
-                )
 
-        self.FC3=nn.Linear(1000, 10)
+        self.FC2=nn.Linear(256, 10)
         self.softmax=nn.Softmax(dim=1)
 
 
@@ -89,11 +101,10 @@ class CNN_A(nn.Module):
         out=self.conv3(out)
         out=self.maxpool3(out)
 
-        out=out.reshape(-1, 4*4*256)
+        out=out.reshape(-1, 4*4*32)
 
         out=self.FC1(out)
         out=self.FC2(out)
-        out=self.FC3(out)
 
         out=self.softmax(out)
 
