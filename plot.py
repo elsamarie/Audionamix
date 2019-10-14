@@ -16,7 +16,7 @@ def plot_crossentropy_loss(train_loss, val_loss,n_epoch):
     plt.title('Train and Valid CrossEntropy Loss')
 
     plt.legend()
-    plt.savefig('./figure/Train_Valid_CrossEntropyLoss_graph.png')
+    plt.savefig('./figure/Train_Valid_CrossEntropyLoss_graphA.png')
     plt.show()
 
 
@@ -33,7 +33,7 @@ def plot_accuracy(train_accuracy, val_accuracy,n_epoch):
     plt.title('Train and Valid Top 1 Accuracy')
 
     plt.legend()
-    plt.savefig('./figure/Train_Valid_Accuracy_graph.png')
+    plt.savefig('./figure/Train_Valid_Accuracy_graphA.png')
     plt.show()
 
 

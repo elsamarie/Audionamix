@@ -1,9 +1,9 @@
 import torch
 from data import testloaderinference, classes
-from architecture import CNN_A
+from architecture import CNN_A, CNN_B
 import random
 from plot_image import *
-PATH_model="./model/model.pt"
+PATH_model="./model/modelB.pt"
 
 
 #Load the model

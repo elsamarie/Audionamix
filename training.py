@@ -5,19 +5,19 @@ import torch.optim as optim
 import torch.nn.functional as F
 import numpy as np
 
-from architecture import CNN_A, Net
+from architecture import CNN_A, CNN_B, CNN_C
 from data import *
 from plot import *
 
 learning_rate=0.001
 momentum=0.9
-n_epoch=500
-PATH_model="./model/model.pt"
+n_epoch=50
+PATH_model="./model/modelC.pt"
 
 
 #Initialisation 
-model=CNN_A()
-optimizer=optim.SGD(model.parameters(), lr=learning_rate, momentum=momentum)
+model=CNN_C()
+optimizer=optim.Adam(model.parameters(), lr=learning_rate, weight_decay=1e-5)
 crossentropy=nn.CrossEntropyLoss()
 
 

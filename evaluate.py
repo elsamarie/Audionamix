@@ -1,9 +1,9 @@
 import torch
 import torch.nn as nn
 from data import testloader, batch_size_test
-from architecture import CNN_A
+from architecture import CNN_A, CNN_B
 
-PATH_model="./model/model.pt"
+PATH_model="./model/modelB.pt"
 
 
 #Load the model
@@ -55,7 +55,7 @@ Accuracy_Top1=Accuracy_Top1/testloader.__len__()
 Accuracy_Top5=Accuracy_Top5/testloader.__len__()
 
 
-print('TEST (10 000 samples) : Top1-Accuracy : %s \% || Top5-Accuracy : %s \% || Cross-Entropy : %s'%(round(Accuracy_Top1*100, 3), round(Accuracy_Top5*100,3), round(Loss, 2)))
+print('TEST (10 000 samples) : Top1-Accuracy : %s  || Top5-Accuracy : %s  || Cross-Entropy : %s'%(round(Accuracy_Top1*100, 3), round(Accuracy_Top5*100,3), round(Loss, 2)))
 
 
 
