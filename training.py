@@ -9,17 +9,32 @@ from architecture import CNN_A, CNN_B, CNN_C
 from data import *
 from plot import *
 
+#Parameters
 learning_rate=0.001
 momentum=0.9
-n_epoch=50
-PATH_model="./model/modelC.pt"
+n_epoch=100
+PATH_model="./model/modelB2.pt"
 
 
 #Initialisation 
-model=CNN_C()
-optimizer=optim.Adam(model.parameters(), lr=learning_rate, weight_decay=1e-5)
-crossentropy=nn.CrossEntropyLoss()
+print(PATH_model)
+model=CNN_B()
 
+
+#Get number of parameters of the model
+number_parameter=0
+tensor_list = list(model.state_dict().items())
+for layer_tensor_name, tensor in tensor_list:
+    print('Layer {}: {} elements'.format(layer_tensor_name, torch.numel(tensor)))
+    number_parameter+=torch.numel(tensor)
+
+print('total amount of parameters : {}'.format(number_parameter))
+
+#Adam optimizer (used for the Loss backpropagation)
+optimizer=optim.Adam(model.parameters(), lr=learning_rate, weight_decay=5e-4)
+
+#Loss object : CrossEntropy
+crossentropy=nn.CrossEntropyLoss()
 
 
 #Performances tracker
@@ -36,14 +51,15 @@ print('Beginning of Training')
 
 for n in range(0, n_epoch):
 
-
+    #Performance trackers for one epoch
     epoch_loss=0
     epoch_accuracy=0
 
     bar=ProgressBar(trainloader.__len__(),'Epoch[{}/{}]:'.format(n+1, n_epoch), ' ',50)
     bar.initProgressBar()
 
-    for i, (inputs, labels) in enumerate(trainloader, 0):
+    
+    for i, (inputs, labels) in enumerate(trainloader, 0): #Train the model : forward and backward
 
 
         optimizer.zero_grad()
@@ -62,6 +78,9 @@ for n in range(0, n_epoch):
 
         batch_accuracy=float(correct)/float(batch_size)
 
+
+
+        #Update the performance trackers
         epoch_accuracy+=batch_accuracy
         epoch_loss+=batch_loss.item()
 
@@ -73,18 +92,20 @@ for n in range(0, n_epoch):
 
     print("Training set   : Loss : %s || Accuracy : %s "%(round(epoch_loss,3), round(epoch_accuracy*100,3)))
 
-
+    #Save the performance for the training set
     train_loss=np.append(train_loss, epoch_loss)
     train_accuracy=np.append(train_accuracy, epoch_accuracy)
 
 
 
 
-
+    #Performance trackers for one epoch
     epoch_loss=0
     epoch_accuracy=0
 
-    for i, (inputs, labels) in enumerate(valloader, 0):
+
+
+    for i, (inputs, labels) in enumerate(valloader, 0): #Validate the model : only forward
 
         outputs=model(inputs)
 
@@ -108,8 +129,13 @@ for n in range(0, n_epoch):
 
     print("Validation set : Loss : %s || Accuracy : %s "%(round(epoch_loss,3), round(epoch_accuracy*100,3)))
 
+    #Save the performance for the validation set
     val_loss=np.append(val_loss, epoch_loss)
     val_accuracy=np.append(val_accuracy, epoch_accuracy)
+
+
+
+
 
 
 #Plot the performance trackers

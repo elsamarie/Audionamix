@@ -24,24 +24,32 @@ def compute_out_size(in_size, F, P, S):
     return out_size
 
 
-class Net(nn.Module):
-    def __init__(self):
-        super(Net, self).__init__()
-        self.conv1 = nn.Conv2d(3, 6, 5)
-        self.pool = nn.MaxPool2d(2, 2)
-        self.conv2 = nn.Conv2d(6, 16, 5)
-        self.fc1 = nn.Linear(16 * 5 * 5, 120)
-        self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 10)
+"""
+CNN C : 
+4 conv. unit
 
-    def forward(self, x):
-        x = self.pool(F.relu(self.conv1(x)))
-        x = self.pool(F.relu(self.conv2(x)))
-        x = x.view(-1, 16 * 5 * 5)
-        x = F.relu(self.fc1(x))
-        x = F.relu(self.fc2(x))
-        x = self.fc3(x)
-        return x
+conv1 3x3 32 RELU
+conv2 3x3 32 RELU
+maxpool1 2x2
+
+conv3 3x3 64 RELU
+conv4 3x3 64 RELU
+maxpool2 2x2
+
+conv5 3x3 128 RELU
+conv6 3x3 128 RELU
+maxpool3 2x2
+
+conv7 3x3 256 RELU
+conv8 3x3 256 RELU
+maxpool4 2x2
+
+FC1 1024 128 RELU
+FC2 128 10 Softmax
+
+
+"""
+
 
 class CNN_C(nn.Module):
 
@@ -155,9 +163,30 @@ class CNN_C(nn.Module):
         return out
 
 
+"""
+CNN B : 
+3 conv. unit
+
+conv1 3x3 32 RELU
+conv2 3x3 32 RELU
+maxpool1 2x2
+
+conv3 3x3 64 RELU
+conv4 3x3 64 RELU
+maxpool2 2x2
+
+conv5 3x3 128 RELU
+conv6 3x3 128 RELU
+maxpool3 2x2
+
+
+FC1 2048 128 RELU
+FC2 128 10 Softmax
+
+
+"""
 
 class CNN_B(nn.Module):
-
 
     def __init__(self):
 
@@ -249,7 +278,23 @@ class CNN_B(nn.Module):
 
         return out
 
+"""
+CNN A : 
+2 conv. unit
 
+conv1 3x3 32 RELU
+conv2 3x3 32 RELU
+maxpool1 2x2
+
+conv3 3x3 64 RELU
+conv4 3x3 64 RELU
+maxpool2 2x2
+
+FC1 4096 128 RELU
+FC2 128 10 Softmax
+
+
+"""
 
 class CNN_A(nn.Module):
 

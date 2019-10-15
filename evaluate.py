@@ -1,9 +1,10 @@
 import torch
 import torch.nn as nn
 from data import testloader, batch_size_test
-from architecture import CNN_A, CNN_B
+from architecture import CNN_A, CNN_B, CNN_C
+from plot import ProgressBar
 
-PATH_model="./model/modelB.pt"
+PATH_model="./model/modelA2.pt"
 
 
 #Load the model
@@ -11,13 +12,18 @@ model=CNN_A()
 model.load_state_dict(torch.load(PATH_model))
 model.eval()
 
-
+#Loss object
 crossentropy=nn.CrossEntropyLoss()
 
 
+#Performance tracker
 Loss=0
 Accuracy_Top1=0
 Accuracy_Top5=0
+
+
+bar=ProgressBar(testloader.__len__(),'Evaluation:', ' ',50)
+bar.initProgressBar()
 
 
 for i, (inputs, labels) in enumerate(testloader, 0):
@@ -48,6 +54,8 @@ for i, (inputs, labels) in enumerate(testloader, 0):
     Loss+=batch_loss.item()
     Accuracy_Top1+=batch_accuracy_top1
     Accuracy_Top5+=batch_accuracy_top5
+
+    bar.loopProgressBar(i)
 
 
 Loss=Loss/testloader.__len__()
