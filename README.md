@@ -35,19 +35,19 @@ Get the inference for one test sample : python inference.py
 
 I am used to build small python files, one for each step of the work. 
 
-- Download or load the training, validation and the test dataloader : data.py
+- data.py : Download or load the training, validation and the test dataloader 
 
-- The three studied configurations of CNN : architecture.py
+- architecture.py : The three studied configurations of CNN 
 
-- Train a model : training.py
+- training.py : Train a model 
 
-- Plot the train and validation loss and accuracy over the learning iterations : plot.py
+- plot.py : Plot the train and validation loss and accuracy over the learning iterations 
 
-- Evaluate a model with the test dataloader : evaluate.py
+- evaluate.py : Evaluate a model with the test dataloader 
 
-- Get the inference class for one test sample : inference.py
+- inference.py : Get the inference class for one test sample 
 
-- Show a image of the dataset : plot_image.py
+- plot_image.py : Show a image of the dataset 
 
 
 
