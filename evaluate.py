@@ -4,11 +4,11 @@ from data import testloader, batch_size_test
 from architecture import CNN_A, CNN_B, CNN_C
 from plot import ProgressBar
 
-PATH_model="./model/modelA2.pt"
+PATH_model="./model/modelC1.pt"
 
 
 #Load the model
-model=CNN_A()
+model=CNN_C()
 model.load_state_dict(torch.load(PATH_model))
 model.eval()
 

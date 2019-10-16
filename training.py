@@ -12,13 +12,13 @@ from plot import *
 #Parameters
 learning_rate=0.001
 momentum=0.9
-n_epoch=100
-PATH_model="./model/modelB2.pt"
+n_epoch=50
+PATH_model="./model/modelAfinal.pt"
 
 
 #Initialisation 
 print(PATH_model)
-model=CNN_B()
+model=CNN_A()
 
 
 #Get number of parameters of the model
