@@ -13,7 +13,7 @@ mkdir ./data
 
 ## Dataset (CIFAR-10)
 
-The CIFAR-10 is a labeled RGB 32x32 images. It is divided into 50000 training images and 10000 test images.
+The CIFAR-10 is a labeled RGB 32x32 images dataset. It is divided into 50000 training images and 10000 test images.
 
 The dataset is provided directly by tensorvision. For the first launch, the dataset will be download into the ./data folder. 
 
