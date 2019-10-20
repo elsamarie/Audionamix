@@ -20,6 +20,9 @@ PATH_model="./model/modelAfinal.pt"
 print(PATH_model)
 model=CNN_A()
 
+if torch.cuda.is_available():
+    model=model.cuda()
+
 
 #Get number of parameters of the model
 number_parameter=0
@@ -60,6 +63,11 @@ for n in range(0, n_epoch):
 
     
     for i, (inputs, labels) in enumerate(trainloader, 0): #Train the model : forward and backward
+
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+            inputs=inputs.cuda()
+            labels=labels.cuda()
 
 
         optimizer.zero_grad()

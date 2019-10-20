@@ -50,6 +50,9 @@ I am used to build small python files, one for each step of the work.
 - plot_image.py : Show a image of the dataset 
 
 
+models are saved inside the ./model folder and figures inside the ./figure folder. 
+
+
 
 
 
