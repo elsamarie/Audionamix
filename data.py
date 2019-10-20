@@ -45,6 +45,7 @@ testloaderinference = data.DataLoader(testset, batch_size=1, shuffle=False, num_
 testsampler=data.RandomSampler(testset, replacement=True, num_samples=10000)
 testloader=data.DataLoader(testset, batch_size=batch_size_test, sampler=testsampler, num_workers=2)
 
+print('Test set size : {}'.format(testsampler.__len__()))
 
 #Text Classes
 classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')

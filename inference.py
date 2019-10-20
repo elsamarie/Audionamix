@@ -3,8 +3,7 @@ from data import testloaderinference, classes
 from architecture import CNN_A, CNN_B
 import random
 from plot_image import *
-PATH_model="./model/modelB.pt"
-
+PATH_model="./model/modelAfinal.pt"
 
 #Load the model 
 model=CNN_A()
